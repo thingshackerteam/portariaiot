@@ -1,0 +1,5 @@
+.DS_Store
+SeverinoServer/node_modules
+SeverinoServer/configuration/config.js
+/nbproject/private/
+npm-debug.log
