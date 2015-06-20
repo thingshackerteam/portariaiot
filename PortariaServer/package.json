@@ -10,6 +10,7 @@
 		"express-session": "1.7.6",
 		"mysql": "2.4.3",
 		"passport": "0.2.1",
-		"passport-facebook": "latest"
+		"passport-facebook": "latest",
+                "body-parser": "^1.8.1"
   	}
 }

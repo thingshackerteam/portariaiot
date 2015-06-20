@@ -1,3 +1,5 @@
 .DS_Store
 PortariaServer/node_modules
 PortariaServer/configuration/config.js
+/nbproject/private/
+npm-debug.log

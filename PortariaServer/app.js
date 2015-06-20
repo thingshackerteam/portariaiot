@@ -6,6 +6,7 @@ var express           =     require('express')
   , cookieParser      =     require('cookie-parser')
   , bodyParser        =     require('body-parser')
   , config            =     require('./configuration/config')
+  , cadastro          =     require('./user/cadastro')
   , mysql             =     require('mysql')
   , app               =     express();
 
@@ -33,9 +34,7 @@ passport.deserializeUser(function(obj, done) {
   done(null, obj);
 });
 
-
 // Use the FacebookStrategy within Passport.
-
 passport.use(new FacebookStrategy({
     clientID: config.facebook_api_key,
     clientSecret:config.facebook_api_secret ,
@@ -43,12 +42,12 @@ passport.use(new FacebookStrategy({
   },
   function(accessToken, refreshToken, profile, done) {
     process.nextTick(function () {
-      console.log(accessToken);
-      //console.log(profile);
-      //Check whether the User exists or not using profile.id
+      console.log('token : ' + accessToken);
+      console.log('profile: ' + profile);
+      
       if(config.use_database==='true')
       {
-      connection.query("SELECT * from user_info where user_id="+profile.id,function(err,rows,fields){
+        connection.query("SELECT * from user_info where user_id="+profile.id,function(err,rows,fields){
         if(err) throw err;
         if(rows.length===0)
           {
@@ -65,7 +64,6 @@ passport.use(new FacebookStrategy({
     });
   }
 ));
-
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
@@ -86,7 +84,6 @@ app.get('/account', ensureAuthenticated, function(req, res){
 
 app.get('/auth/facebook', passport.authenticate('facebook',{scope:'email'}));
 
-
 app.get('/auth/facebook/callback',
   passport.authenticate('facebook', { successRedirect : '/', failureRedirect: '/login' }),
   function(req, res) {
@@ -98,10 +95,15 @@ app.get('/logout', function(req, res){
   res.redirect('/');
 });
 
+app.post('/cadastro', function(req, res) {
+    res.writeHead(200, {'Content-Type': 'application/json'});
+   
+    res.end(JSON.stringify(cadastro.novoCadastro(req)));
+});
 
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) { return next(); }
-  res.redirect('/login')
+  res.redirect('/login');
 }
 
 app.listen(3000);
